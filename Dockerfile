@@ -1,27 +1,31 @@
-# Use an official Python image
+# Use official lightweight Python 3.10 image
 FROM python:3.10-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
 # Set working directory
 WORKDIR /app
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git \         # needed for pip install from GitHub
-    ffmpeg \      # needed for your app
+    git \
+    ffmpeg \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-
-# Copy project files into the container
-COPY . /app/
 
 # Upgrade pip
 RUN pip install --upgrade pip
 
+# Copy all files
+COPY . /app/
+
 # Install Python dependencies
 RUN pip install -r requirements.txt
 
-# (Optional) Expose a port if needed, e.g., for a web server
-# EXPOSE 8000
+# Expose port (Flask or your bot port)
+EXPOSE 8080
 
-# Define default command
-# CMD ["python", "your_main_script.py"]
+# Start the bot
+CMD ["python", "main.py"]
