@@ -1,29 +1,27 @@
 # Use an official Python image
 FROM python:3.10-slim
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ffmpeg \
-    wget \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Set work directory
+# Set working directory
 WORKDIR /app
 
-# Copy the project files into the container
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \         # needed for pip install from GitHub
+    ffmpeg \      # needed for your app
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy project files into the container
 COPY . /app/
 
-# Install Python dependencies
+# Upgrade pip
 RUN pip install --upgrade pip
+
+# Install Python dependencies
 RUN pip install -r requirements.txt
 
-# Expose a port if needed (optional, for webhook bots)
-# EXPOSE 5000
+# (Optional) Expose a port if needed, e.g., for a web server
+# EXPOSE 8000
 
-# Run the bot
-CMD ["python3", "-m", "bot"]
+# Define default command
+# CMD ["python", "your_main_script.py"]
