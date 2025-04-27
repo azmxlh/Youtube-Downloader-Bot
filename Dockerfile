@@ -1,12 +1,9 @@
-# Use official lightweight Python 3.10 image
+# Use an official Python runtime
 FROM python:3.10-slim
 
 # Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-
-# Set working directory
-WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -15,17 +12,18 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip
-RUN pip install --upgrade pip
+# Set work directory
+WORKDIR /app
 
-# Copy all files
+# Copy project
 COPY . /app/
 
-# Install Python dependencies
+# Upgrade pip and install Python dependencies
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Expose port (optional, for webhook bots)
-EXPOSE 8080
+# Give execution permissions to start.sh
+RUN chmod +x start.sh
 
-# Start the bot
-CMD ["python", "bot.py"]
+# Start the app
+CMD ["bash", "start.sh"]
