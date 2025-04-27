@@ -24,8 +24,8 @@ COPY . /app/
 # Install Python dependencies
 RUN pip install -r requirements.txt
 
-# Expose port (Flask or your bot port)
+# Expose port (optional, for webhook bots)
 EXPOSE 8080
 
 # Start the bot
-CMD ["python", "main.py"]
+CMD ["python", "bot.py"]
